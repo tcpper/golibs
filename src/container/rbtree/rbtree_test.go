@@ -107,7 +107,7 @@ func TestInteration(t *testing.T) {
 		tree.Insert(MyInt(i))
 	}
 
-	cur := tree.MinRaw()
+	cur := tree.MinNode()
 
 	var i MyInt
 	for cur != tree.Nil {
@@ -119,7 +119,7 @@ func TestInteration(t *testing.T) {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i++
-		cur = tree.NextRaw(cur)
+		cur = tree.NextNode(cur)
 	}
 }
 
@@ -129,7 +129,7 @@ func TestInterationBackward(t *testing.T) {
 		tree.Insert(MyInt(i))
 	}
 
-	cur := tree.MaxRaw()
+	cur := tree.MaxNode()
 
 	var i MyInt
 	i = MyInt(12)
@@ -143,7 +143,7 @@ func TestInterationBackward(t *testing.T) {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i--
-		cur = tree.PrevRaw(cur)
+		cur = tree.PrevNode(cur)
 	}
 }
 
@@ -202,13 +202,13 @@ func TestDupableTreeInteration(t *testing.T) {
 	}
 
 	i := 0
-	cur := tree.MinRaw()
+	cur := tree.MinNode()
 	for cur != tree.Nil {
 		if Compare(MyInt(items[i]), cur.Bag) != Equal {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i++
-		cur = tree.NextRaw(cur)
+		cur = tree.NextNode(cur)
 	}
 	if i != len(items) {
 		t.Errorf("too many tree item %d", i)
@@ -227,13 +227,13 @@ func TestDupableTreeInterationBackward(t *testing.T) {
 	}
 
 	i := len(items) - 1
-	cur := tree.MaxRaw()
+	cur := tree.MaxNode()
 	for cur != tree.Nil {
 		if Compare(MyInt(items[i]), cur.Bag) != Equal {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i--
-		cur = tree.PrevRaw(cur)
+		cur = tree.PrevNode(cur)
 	}
 	if i != -1 {
 		t.Errorf("too many tree item %d", i)
@@ -259,13 +259,13 @@ func count(items []int, value int) (c int) {
 }
 
 func plainDeleteHelper(tree *RBTree, items []int, value int, count int, t *testing.T) {
-	nodes := tree.FindRaw(MyInt(value))
+	nodes := tree.FindNode(MyInt(value))
 	if len(nodes) != count {
 		t.Errorf("expect %d four v.s. %d", count, len(nodes))
 	} else {
 		for i := 0; i < count; i++ {
-			tree.PlainDeleteRaw(nodes[0])
-			nodes = tree.FindRaw(MyInt(value))
+			tree.PlainDeleteNode(nodes[0])
+			nodes = tree.FindNode(MyInt(value))
 			if len(nodes) != count-1-i {
 				t.Errorf("should be %d four left", count-1-i)
 			}
@@ -273,13 +273,13 @@ func plainDeleteHelper(tree *RBTree, items []int, value int, count int, t *testi
 	}
 
 	i := 0
-	cur := tree.MinRaw()
+	cur := tree.MinNode()
 	for cur != tree.Nil {
 		if Compare(MyInt(items[i]), cur.Bag) != Equal {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i++
-		cur = tree.NextRaw(cur)
+		cur = tree.NextNode(cur)
 	}
 	if i != len(items) {
 		t.Errorf("too many tree item %d", i)
@@ -287,16 +287,16 @@ func plainDeleteHelper(tree *RBTree, items []int, value int, count int, t *testi
 }
 
 func deleteHelper(tree *RBTree, items []int, value int, count int, t *testing.T) {
-	nodes := tree.FindRaw(MyInt(value))
+	nodes := tree.FindNode(MyInt(value))
 	if len(nodes) != count {
 		t.Errorf("expect %d four v.s. %d", count, len(nodes))
 	} else {
 		for i := 0; i < count; i++ {
-			tree.DeleteRaw(nodes[0])
+			tree.DeleteNode(nodes[0])
 			if err := tree.Verify(); err != nil {
 				t.Errorf("verify failed after delete, %s", err.Error())
 			}
-			nodes = tree.FindRaw(MyInt(value))
+			nodes = tree.FindNode(MyInt(value))
 			if len(nodes) != count-1-i {
 				t.Errorf("should be %d four left", count-1-i)
 			}
@@ -304,13 +304,13 @@ func deleteHelper(tree *RBTree, items []int, value int, count int, t *testing.T)
 	}
 
 	i := 0
-	cur := tree.MinRaw()
+	cur := tree.MinNode()
 	for cur != tree.Nil {
 		if Compare(MyInt(items[i]), cur.Bag) != Equal {
 			t.Errorf("expect %d, not %d", i, cur.Bag)
 		}
 		i++
-		cur = tree.NextRaw(cur)
+		cur = tree.NextNode(cur)
 	}
 	if i != len(items) {
 		t.Errorf("too many tree item %d", i)
@@ -389,7 +389,7 @@ func TestDupableTreeDelete(t *testing.T) {
 
 }
 
-func TestDupableTreePlainDeleteRaw(t *testing.T) {
+func TestDupableTreePlainDeleteNode(t *testing.T) {
 	tree := NewRBTree(true)
 
 	items := []int{0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7, 7, 8, 9, 10}
@@ -400,7 +400,7 @@ func TestDupableTreePlainDeleteRaw(t *testing.T) {
 		}
 	}
 
-	if err := tree.PlainDeleteRaw(tree.NewRBNode(MyInt(40), Red)); err == nil {
+	if err := tree.PlainDeleteNode(tree.NewRBNode(MyInt(40), Red)); err == nil {
 		t.Error("delete non match root node should be error")
 	}
 
@@ -416,7 +416,7 @@ func TestDupableTreePlainDeleteRaw(t *testing.T) {
 	}
 }
 
-func TestDupableTreeDeleteRaw(t *testing.T) {
+func TestDupableTreeDeleteNode(t *testing.T) {
 	tree := NewRBTree(true)
 
 	items := []int{0, 0, 1, 2, 3, 4, 4, 4, 5, 6, 7, 7, 8, 9, 10}
@@ -450,13 +450,13 @@ func TestDupableTreeRotate(t *testing.T) {
 		}
 	}
 
-	min := tree.MinRaw()
+	min := tree.MinNode()
 	if min == tree.Nil {
 		t.Error("unexpected nil")
 	}
 
 	next := min
-	for next = tree.NextRaw(next); next != tree.Nil; next = tree.NextRaw(next) {
+	for next = tree.NextNode(next); next != tree.Nil; next = tree.NextNode(next) {
 		if next.right == tree.Nil {
 			if err := tree.rotateLeft(next); err == nil {
 				t.Error("should give out error when do left-rotate with right child be nil")
@@ -468,9 +468,9 @@ func TestDupableTreeRotate(t *testing.T) {
 		}
 	}
 
-	next = tree.MinRaw()
+	next = tree.MinNode()
 	i := 0
-	for ; next != tree.Nil; next = tree.NextRaw(next) {
+	for ; next != tree.Nil; next = tree.NextNode(next) {
 		if Compare(next.Bag, MyInt(items[i])) != Equal {
 			t.Error("not equal %d v.s. %d", next.Bag, items[i])
 		}
@@ -493,13 +493,13 @@ func TestDupableTreeFindAfterRotate(t *testing.T) {
 		}
 	}
 
-	min := tree.MinRaw()
+	min := tree.MinNode()
 	if min == tree.Nil {
 		t.Error("unexpected nil")
 	}
 
 	next := min
-	for next = tree.NextRaw(next); next != tree.Nil; next = tree.NextRaw(next) {
+	for next = tree.NextNode(next); next != tree.Nil; next = tree.NextNode(next) {
 		if next.left == tree.Nil {
 			if err := tree.rotateRight(next); err == nil {
 				t.Error("should give out error when do right-rotate with left child be nil")

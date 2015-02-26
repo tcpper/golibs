@@ -5,7 +5,7 @@ import (
 )
 
 // caller should make sure node is in tree
-func (t *RBTree) PlainDeleteRaw(n *RBNode) error {
+func (t *RBTree) PlainDeleteNode(n *RBNode) error {
 	if n == nil || n == t.Nil {
 		return errors.New("rbtree: can not delete nil node")
 	}
@@ -152,13 +152,13 @@ func (t *RBTree) PlainDelete(comp Comparable, all bool) error {
 		return errors.New("no need to delete all for nondupable tree")
 	}
 
-	if nodes := t.FindRaw(comp); len(nodes) > 0 {
+	if nodes := t.FindNode(comp); len(nodes) > 0 {
 		if !all {
 			node := nodes[len(nodes)-1]
-			return t.PlainDeleteRaw(node)
+			return t.PlainDeleteNode(node)
 		} else {
 			for _, node := range nodes {
-				if err := t.PlainDeleteRaw(node); err != nil {
+				if err := t.PlainDeleteNode(node); err != nil {
 					return err
 				}
 			}

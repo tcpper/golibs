@@ -292,7 +292,7 @@ func (t *RBTree) deleteFix(x *RBNode) {
 	x.color = Black
 }
 
-func (t *RBTree) DeleteRaw(z *RBNode) {
+func (t *RBTree) DeleteNode(z *RBNode) {
 	t.size -= 1
 	var x *RBNode
 	y := z
@@ -340,14 +340,14 @@ func (t *RBTree) Delete(comp Comparable, all bool) error {
 		return errors.New("no need to delete all for nondupable tree")
 	}
 
-	if nodes := t.FindRaw(comp); len(nodes) > 0 {
+	if nodes := t.FindNode(comp); len(nodes) > 0 {
 		if !all {
 			node := nodes[len(nodes)-1]
-			t.DeleteRaw(node)
+			t.DeleteNode(node)
 			return nil
 		} else {
 			for _, node := range nodes {
-				t.DeleteRaw(node)
+				t.DeleteNode(node)
 			}
 			return nil
 		}
@@ -357,7 +357,7 @@ func (t *RBTree) Delete(comp Comparable, all bool) error {
 }
 
 func (t *RBTree) Find(key Comparable) (bags []Comparable) {
-	nodes := t.FindRaw(key)
+	nodes := t.FindNode(key)
 
 	for _, n := range nodes {
 		bags = append(bags, n.Bag)
@@ -366,7 +366,7 @@ func (t *RBTree) Find(key Comparable) (bags []Comparable) {
 }
 
 // for dupable tree, random sequence
-func (t *RBTree) FindRaw(key Comparable) (nodes []*RBNode) {
+func (t *RBTree) FindNode(key Comparable) (nodes []*RBNode) {
 	if t.size == 0 {
 		return
 	}
@@ -388,7 +388,7 @@ LOOP:
 	}
 
 	next := n
-	for next = t.NextRaw(next); next != t.Nil; next = t.NextRaw(next) {
+	for next = t.NextNode(next); next != t.Nil; next = t.NextNode(next) {
 		if Compare(key, next.Bag) == Equal {
 			nodes = append(nodes, next)
 		} else {
@@ -397,7 +397,7 @@ LOOP:
 	}
 
 	prev := n
-	for prev = t.PrevRaw(prev); prev != t.Nil; prev = t.PrevRaw(prev) {
+	for prev = t.PrevNode(prev); prev != t.Nil; prev = t.PrevNode(prev) {
 		if Compare(key, prev.Bag) == Equal {
 			nodes = append(nodes, prev)
 		} else {
@@ -418,7 +418,7 @@ func (t *RBTree) Min() Comparable {
 	return n.Bag
 }
 
-func (t *RBTree) MinRaw() *RBNode {
+func (t *RBTree) MinNode() *RBNode {
 	if t.size == 0 {
 		return t.Nil
 	}
@@ -440,7 +440,7 @@ func (t *RBTree) Max() Comparable {
 	return n.Bag
 }
 
-func (t *RBTree) MaxRaw() *RBNode {
+func (t *RBTree) MaxNode() *RBNode {
 	if t.size == 0 {
 		return t.Nil
 	}
@@ -472,7 +472,7 @@ func (t *RBTree) prevParent(n *RBNode) *RBNode {
 	return t.Nil
 }
 
-func (t *RBTree) PrevRaw(n *RBNode) *RBNode {
+func (t *RBTree) PrevNode(n *RBNode) *RBNode {
 	if prev := t.prevChild(n); prev != t.Nil {
 		return prev
 	} else if prev := t.prevParent(n); prev != t.Nil {
@@ -503,7 +503,7 @@ func (t *RBTree) nextParent(n *RBNode) *RBNode {
 	return t.Nil
 }
 
-func (t *RBTree) NextRaw(n *RBNode) *RBNode {
+func (t *RBTree) NextNode(n *RBNode) *RBNode {
 	if next := t.nextChild(n); next != t.Nil {
 		return next
 	} else if next := t.nextParent(n); next != t.Nil {
